@@ -1,41 +1,57 @@
 'use client'
-
 import { authClient } from "@/lib/auth-client";
 import { Check } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, Label, TextField } from "@heroui/react";
 
-const signupPage = () => {
-
-    const onSubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const objectData = Object.fromEntries(formData.entries());
+const signinPage = () => {
 
 
-        const { data, error } = await authClient.signIn.email({
-            email: objectData.email, // required
-            password: objectData.password, // required
-            rememberMe: true,
-            callbackURL: "/",
-        });
-        console.log({ data, error })
+     const onSubmit =async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            const objectData = Object.fromEntries(formData.entries());
+            
+    
+            const { data, error } = await authClient.signUp.email({
+                name: objectData.name,
+                email: objectData.email,
+                password: objectData.password, 
+               callbackURL:"/"
+            });
+            console.log({data,error})
+    
+            if(error){
+                alert(error.message)
+            }
+            if(data){
+                alert(data.message)
+            }
+    
+        };
 
-        if (error) {
-            alert(error.message)
-        }
-        if (data) {
-            alert(data.message)
-        }
-
-    };
 
 
 
     return (
         <div>
-            <h2 className='text-center text-4xl font-bold'> Please SignUp</h2>
+            <h2 className='text-center text-4xl font-bold'> Please SigIn</h2>
             <div className="flex justify-center">
                 <Form className="flex w-96 flex-col gap-4" onSubmit={onSubmit}>
+
+                    <TextField
+                        isRequired
+                        name="name"
+                        validate={(value) => {
+                            if (value.length < 3) {
+                                return "Name must be at least 3 characters";
+                            }
+                            return null;
+                        }}
+                    >
+                        <Label>Name</Label>
+                        <Input name="name" placeholder="John Doe" />
+                        <FieldError />
+                    </TextField>
 
                     <TextField
                         isRequired
@@ -90,4 +106,4 @@ const signupPage = () => {
     );
 };
 
-export default signupPage;
+export default signinPage;
